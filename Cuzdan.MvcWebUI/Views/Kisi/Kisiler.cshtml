@@ -1,0 +1,161 @@
+﻿@model Cuzdan.MvcWebUI.Models.KisiViewModel
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h4>Kayıtlı Kullanıcılar</h4>
+            </div>
+            <div class="card-tools">
+                <button data-toggle="modal" data-target="#userEkleModal"><i class="fas fa-plus"></i></button>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="users" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Kullanıcı Id</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>Kullanıcı Kodu</th>
+                        <th>Ekleyen Kişi</th>
+                        <th>Eklendiği Tarih</th>
+                        <th>Düzenle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Kisiler)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.User_Name</td>
+                            <td>@user.User_Code</td>
+                            <td>@user.AddedBy</td>
+                            <td>@user.AddedDate</td>
+                            <td>
+                                <button data-toggle="modal" data-target="#userUpdateModal" onclick="editUser(@user.Id)"><i class="far fa-edit"></i></button>
+                            </td>
+                            <td>
+                                <button data-toggle="modal" data-target="#userDeleteModal" onclick="deleteUser(@user.Id)"><i class="far fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="userEkleModal" tabindex="-1" role="dialog" aria-labelledby="userEkleLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Kisi" asp-action="Add" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userEkleLabel">Kullanıcı Ekle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="userAdi">Kullanıcı Adı :</label>
+                                        <input asp-for="@Model.Kisi.User_Name" type="text" class="form-control" id="userAdi" placeholder="Kullanıcı Adı" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="userKodu">Kullanıcı Kodu :</label>
+                                        <input asp-for="@Model.Kisi.User_Code" type="text" class="form-control" id="userKodu" placeholder="Kullanıcı Kodu" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="userUpdateModal" tabindex="-1" role="dialog" aria-labelledby="userUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Kisi" asp-action="Edit" method="post">
+                <input asp-for="@Model.Kisi.Id" id="userId" hidden />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userUpdateLabel">Kullanıcı Güncelle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="userAdi">Kullanıcı Adı :</label>
+                                        <input asp-for="@Model.Kisi.User_Name" type="text" class="form-control" id="userNameEdit" placeholder="Kullanıcı Adı" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="userKodu">Kullanıcı Kodu :</label>
+                                        <input asp-for="@Model.Kisi.User_Code" type="text" class="form-control" id="userCodeEdit" placeholder="Kullanıcı Kodu" />
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section editUserScript{
+
+    <script type="text/javascript">
+        function editUser(id) {
+            $.get("/Kisi/Edit", { id: id })
+                .done(function (user) {
+                    $('#userId').val(user.id);
+                    $('#userNameEdit').val(user.user_Name);
+                    $('#userCodeEdit').val(user.user_Code);
+                    $('#userUpdateModal').modal('show');
+                })
+        }
+    </script>
+
+    <script>
+        $(function () {
+            $("#hisseler").DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+            });
+        });
+    </script>
+}

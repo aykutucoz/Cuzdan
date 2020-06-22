@@ -1,0 +1,160 @@
+﻿@model Cuzdan.MvcWebUI.Models.HisseViewModel
+@{
+    ViewData["Title"] = "Hisseler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h4>Kayıtlı Hisseler</h4>
+            </div>
+            <div class="card-tools">
+                <button data-toggle="modal" data-target="#hisseEkleModal"><i class="fas fa-plus"></i></button>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="hisseler" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Hisse Id</th>
+                        <th>Hisse Adı</th>
+                        <th>Hisse Kodu</th>
+                        <th>Ekleyen Kişi</th>
+                        <th>Eklendiği Tarih</th>
+                        <th>Düzenle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var hisse in Model.Hisseler)
+                    {
+                        <tr>
+                            <td>@hisse.Id</td>
+                            <td>@hisse.Hisse_Adi</td>
+                            <td>@hisse.Hisse_Kodu</td>
+                            <td>@hisse.AddedBy</td>
+                            <td>@hisse.AddedDate</td>
+                            <td>
+                                <button data-toggle="modal" data-target="#hisseUpdateModal" onclick="editHisse(@hisse.Id)"><i class="far fa-edit"></i></button>
+                            </td>
+                            <td>
+                                <button data-toggle="modal" data-target="#hisseDeleteModal" onclick="deleteHisse(@hisse.Id)"><i class="far fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="hisseEkleModal" tabindex="-1" role="dialog" aria-labelledby="hisseEkleLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Hisse" asp-action="Add" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hisseEkleLabel">Hisse Ekle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="hisseAdi">Hisse Adı :</label>
+                                        <input asp-for="@Model.Hisse.Hisse_Adi" type="text" class="form-control" id="hisseAdi" placeholder="Hisse Adı" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hisseKodu">Hisse Kodu :</label>
+                                        <input asp-for="@Model.Hisse.Hisse_Kodu" type="text" class="form-control" id="hisseKodu" placeholder="Hisse Kodu" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="hisseUpdateModal" tabindex="-1" role="dialog" aria-labelledby="hisseUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Hisse" asp-action="Edit" method="post">
+                <input asp-for="@Model.Hisse.Id" id="hisseId" hidden />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="hisseUpdateLabel">Hisse Güncelle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="hisseAdi">Hisse Adı :</label>
+                                        <input asp-for="@Model.Hisse.Hisse_Adi" type="text" class="form-control" id="hisseAdiEdit" placeholder="Hisse Adı" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hisseKodu">Hisse Kodu :</label>
+                                        <input asp-for="@Model.Hisse.Hisse_Kodu" type="text" class="form-control" id="hisseKoduEdit" placeholder="Hisse Kodu" />
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section editHisseScript{
+    <script type="text/javascript">
+        function editHisse(id) {
+            $.get("/Hisse/Edit", { id: id })
+                .done(function (hisse) {
+                    $('#hisseId').val(hisse.id);
+                    $('#hisseAdiEdit').val(hisse.hisse_Adi);
+                    $('#hisseKoduEdit').val(hisse.hisse_Kodu);
+                    $('#hisseUpdateModal').modal('show');
+                })
+        }
+    </script>
+
+    <script>
+        $(function () {
+            $("#hisseler").DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+            });
+        });
+    </script>
+}

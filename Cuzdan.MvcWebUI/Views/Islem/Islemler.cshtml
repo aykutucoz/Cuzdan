@@ -1,0 +1,194 @@
+﻿@model Cuzdan.MvcWebUI.Models.IslemViewModel
+@{
+    ViewData["Title"] = "Islemler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h4>Kayıtlı İşlemler</h4>
+            </div>
+            <div class="card-tools">
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label>Kişi Seç</label>
+                <input id="selected" hidden />
+                <select class="form-control col-md-4" id="selectListKisiler" asp-for="@Model.kisi.Id" asp-items="@Model.selectListKisiler">
+                    <option disabled selected value="-1">Seçiniz</option>
+                </select>
+            </div>
+            <div class="container-fluid">
+                <div class="table-responsive">
+                    <table id="islemler" class="table table-data table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Hisse</th>
+                                <th>Kurum</th>
+                                <th>Alış</th>
+                                <th>Hedef</th>
+                                <th>Adet</th>
+                                <th>Maliyet (TL)</th>
+                                <th>İşlem Tarihi</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="islemYapModal" tabindex="-1" role="dialog" aria-labelledby="islemYapLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="islemForm" enctype="multipart/form-data" asp-controller="Islem" asp-action="Add" method="post">
+                <input asp-for="IslemComplexData.KisiId" id="userId" hidden />
+                <input asp-for="IslemComplexData.IslemId" id="IslemId" hidden />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="islemLabel">İşlem Yap</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label>Hisse :</label>
+                                        <input type="text" class="form-control" id="hisseAdi" disabled />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kurum :</label>
+                                        <input type="text" class="form-control" id="kurumAdi" disabled />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="adet" id="mevcutAdet">Adet :</label>
+                                        <input type="text" class="form-control" id="adet" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="alis">Fiyat :</label>
+                                        <input type="text" class="form-control" id="alisFiyat" />
+                                    </div>
+                                    <div class="form-group clearfix">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="icheck-success d-inline">
+                                                    <input type="radio" name="islemKodu" id="islemAlis" value="1">
+                                                    <label for="islemAlis">
+                                                        Alış
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="icheck-danger d-inline">
+                                                    <input type="radio" name="islemKodu" id="islemSatis" value="0">
+                                                    <label for="islemSatis">
+                                                        Satış
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary" onclick="islemKaydet();">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section getIslemlerScript{
+    <script type="text/javascript">
+
+        $("#selectListKisiler").on("change", function () {
+            var KisiId = $(this).val();
+
+            $('#userId').val(KisiId);
+
+            $.ajax({
+                url: '/Islem/GetIslemler',
+                type: "GET",
+                data: { id: KisiId },
+                success: function (response) {
+                    response = JSON.parse(response);
+                    $("#islemler").dataTable({
+                        data: response,
+                        "columns": [
+                            { data: "IslemId" },
+                            { data: "HisseAdi" },
+                            { data: "KurumAdi" },
+                            { data: "Alis" },
+                            { data: "Hedef" },
+                            { data: "IslemAdet" },
+                            { data: "Maliyet" },
+                            { data: "AddedDate" },
+                            {
+                                data: "IslemId",
+                                render: function (data, type) {
+                                    return "<button data-toggle='modal' data-target='#islemYapModal' onClick='islemYap(" + data + ")'><i class='fas fa-plus'></i></button>";
+                                }
+                            }
+                        ]
+                    });
+                }
+            });
+        });
+
+        function islemYap(id) {
+            $.get("/Islem/Edit", { id: id })
+                .done(function (islem) {
+                    $('#hisseAdi').val(islem.hisseAdi);
+                    $('#IslemId').val(islem.islemId);
+                    $('#kurumAdi').val(islem.kurumAdi);
+                    $('#mevcutAdet').html("Adet: (Mevcut:" + islem.islemAdet + ")");
+                    $('#islemYapModal').modal('show');
+                })
+        }
+
+        function islemKaydet() {
+            var islemKodu;
+            if ($('input[name=islemKodu]:checked', '#islemForm').val() == 1) islemKodu = 1; else islemKodu = 0;
+                            
+            var islemViewModel = {
+                islemComplexData: {
+                    IslemId : $('#IslemId').val(),
+                    UserId : $('#UserId').val(),
+                    IslemKodu : islemKodu,
+                    Alis : $('#alisFiyat').val() ,
+                    IslemAdet : $('#adet').val()
+                }
+            }
+
+            $.ajax({
+                url: '/Islem/Add',
+                method: 'POST',
+                data: islemViewModel,
+                success: function (data) {
+                    $('#selectListKisiler').val(data.islemComplexData.UserId);
+                    alert("success");
+                }
+            })
+        }
+
+    </script>
+}

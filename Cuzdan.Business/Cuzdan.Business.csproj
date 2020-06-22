@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cuzdan.DataAccess\Cuzdan.DataAccess.csproj" />
+    <ProjectReference Include="..\Cuzdan.Entity\Cuzdan.Entity.csproj" />
+  </ItemGroup>
+
+</Project>

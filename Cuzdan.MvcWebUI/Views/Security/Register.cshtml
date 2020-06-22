@@ -1,0 +1,75 @@
+﻿@model Cuzdan.MvcWebUI.Models.Secutiry.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LayoutSecurity.cshtml";
+}
+
+<div class="hold-transition register-page">
+    <div class="register-box">
+        <div class="register-logo">
+            <a href="/Home/Index"><b>Borsa</b></a>
+        </div>
+
+        <div class="card">
+            <div class="card-body register-card-body">
+                <p class="login-box-msg">Yeni Kayıt</p>
+
+                <form asp-action="Register" asp-controller="Security" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="input-group mb-3">
+                        <input id="userName" asp-for="@Model.UserName" type="text" class="form-control" placeholder="Kullanıcı Adı">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+
+                    <div class="input-group mb-3">
+                        <input id="email" asp-for="@Model.Email" type="email" class="form-control" placeholder="Email">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="@Model.Email" class="text-danger"></span>
+
+                    <div class="input-group mb-3">
+                        <input id="password" asp-for="@Model.Password" type="password" class="form-control" placeholder="Şifre">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="@Model.Password" class="text-danger"></span>
+
+                    <div class="input-group mb-3">
+                        <input id="confirmedPassword" asp-for="@Model.ConfirmedPassword" type="password" class="form-control" placeholder="Şifre Tekrar">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="@Model.ConfirmedPassword" class="text-danger"></span>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">Kaydol</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <div class="row">
+                        <a href="/Security/Login" class="text-center" style="margin-top:10px;">Zaten Üyeyim</a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- /.form-box -->
+        </div><!-- /.card -->
+    </div>
+
+</div>

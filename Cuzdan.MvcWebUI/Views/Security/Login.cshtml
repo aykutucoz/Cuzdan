@@ -1,0 +1,59 @@
+﻿@model Cuzdan.MvcWebUI.Models.Secutiry.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutSecurity.cshtml";
+    var returnUrl = Context.Request.Query["returnurl"];
+}
+<div class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <a href="/Home/Index"><b>Borsa</b></a>
+        </div>
+        <!-- /.login-logo -->
+        <div class="card">
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Giriş Yapın</p>
+                <form asp-action="Login" asp-controller="Security" asp-route-returnurl="@returnUrl" method="post">
+                    <div class="input-group mb-3">
+                        <input asp-for="@Model.Email" type="email" class="form-control" placeholder="Email" required="">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input asp-for="@Model.Password" type="password" class="form-control" placeholder="Şifre" required="">
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="icheck-primary">
+                                <input type="checkbox" id="remember">
+                                <label for="remember">
+                                    Beni Hatırla
+                                </label>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-primary btn-block">Giriş Yap</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <p class="mb-1">
+                        <a href="/Security/ForgotPassword">Şifremi Unuttum</a>
+                    </p>
+                    <p class="mb-0">
+                        <a href="/Security/Register" class="text-center">Üye Ol</a>
+                    </p>
+                </form>
+            </div>
+            <!-- /.login-card-body -->
+        </div>
+    </div>
+</div>

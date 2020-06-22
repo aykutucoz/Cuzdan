@@ -1,0 +1,197 @@
+﻿@model Cuzdan.MvcWebUI.Models.KurumViewModel
+@{
+    ViewData["Title"] = "Kurumlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h4>Kayıtlı Kurumlar</h4>
+            </div>
+            <div class="card-tools">
+                <button data-toggle="modal" data-target="#kurumEkleModal"><i class="fas fa-plus"></i></button>
+            </div>
+        </div>
+        <div class="card-body">
+            <table id="kurumlar" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Kurum Id</th>
+                        <th>Kurum Adı</th>
+                        <th>Kurum Kodu</th>
+                        <th>Ekleyen Kişi</th>
+                        <th>Eklendiği Tarih</th>
+                        <th>Düzenle</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var kurum in Model.Kurumlar)
+                    {
+                        <tr>
+                            <td>@kurum.Id</td>
+                            <td>@kurum.Kurum_Adi</td>
+                            <td>@kurum.Kurum_Kodu</td>
+                            <td>@kurum.AddedBy</td>
+                            <td>@kurum.AddedDate</td>
+                            <td>
+                                <button data-toggle="modal" data-target="#kurumUpdateModal" onclick="editKurum(@kurum.Id)"><i class="far fa-edit"></i></button>
+                            </td>
+                            <td>
+                                <button href="#" onclick="deleteKurum(@kurum.Id)"><i class="far fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="kurumEkleModal" tabindex="-1" role="dialog" aria-labelledby="kurumEkleLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Kurum" asp-action="Add" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="kurumEkleLabel">Kurum Ekle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="kurumAdi">Kurum Adı :</label>
+                                        <input asp-for="Kurum.Kurum_Adi" type="text" class="form-control" id="kurumAdi" placeholder="Kurum Adı" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="kurumKodu">Kurum Kodu :</label>
+                                        <input asp-for="Kurum.Kurum_Kodu" type="text" class="form-control" id="kurumKodu" placeholder="Kurum Kodu" />
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="kurumUpdateModal" tabindex="-1" role="dialog" aria-labelledby="kurumUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-controller="Kurum" asp-action="Edit" method="post">
+                <input asp-for="@Model.Kurum.Id" id="kurumId" hidden />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="kurumUpdateLabel">Kurum Güncelle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="kurumAdi">Kurum Adı :</label>
+                                        <input asp-for="@Model.Kurum.Kurum_Adi" type="text" class="form-control" id="kurumAdiEdit" placeholder="Kurum Adı" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="kurumKodu">Kurum Kodu :</label>
+                                        <input asp-for="@Model.Kurum.Kurum_Kodu" type="text" class="form-control" id="kurumKoduEdit" placeholder="Kurum Kodu" />
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section editKurumScript{
+    <script type="text/javascript">
+        function editKurum(id) {          
+                $.get("/Kurum/Edit", { id: id })
+                    .done(function (kurum) {
+                        $('#kurumId').val(kurum.id);
+                        $('#kurumAdiEdit').val(kurum.kurum_Adi);
+                        $('#kurumKoduEdit').val(kurum.kurum_Kodu);
+                        $('#kurumUpdateModal').modal('show');                        
+                    })
+        }        
+
+        function deleteKurum(id){        
+            Swal.fire({
+                title: 'Emin Misin?',
+                text: "Silinen Kayıtlar Tekrar Listelenemez!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Evet, Sil!'
+            }).then((result) => {
+                if (result.value) {
+                    $.get("/Kurum/Delete", { id: id })
+                        .done(function (result) {
+                            if (result == 0) {
+                                Swal.fire(
+                                    'Silinemedi!',
+                                    'Kayıt Silinemedi!.',
+                                    'warning'
+                                )
+                                location.reload();
+                            }
+                            else {
+                                Swal.fire(
+                                    'Silindi!',
+                                    'Kayıt Silindi.',
+                                    'success'
+                                )
+                                location.reload();
+                            }
+                        });                   
+                }
+            })
+        }       
+    </script>
+
+    <script>
+        $(function () {
+            $("#kurumlar").DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true,
+            });
+        });
+    </script>
+
+}

@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewData["Title"] = "ConfirmEmailInfo";
+    Layout = "~/Views/Shared/_LayoutSecurity.cshtml";
+}
+<div class="hold-transition login-page">
+    <div class="login-box">
+        <div class="card">
+            <div class="card-header">
+                <p>Aktivasyon Maili</p>
+            </div>
+            <div class="card-body">
+                <p><b>@TempData["email"]</b> adresinize üyelik aktivasyonu için bir email gönderilmiştir. Mailinizi kontrol ediniz ve gelen maildeki linke tıklayarak sitemize tekrar ulaşınız.</p>
+            </div>
+            <div class="card-footer">
+                <p><a class="btn-app" href="/Security/Login">Giriş Yap</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+

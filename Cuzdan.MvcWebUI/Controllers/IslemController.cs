@@ -88,7 +88,7 @@ namespace Cuzdan.MvcWebUI.Controllers
                    
                     _islemService.Add(islem);
                     TempData["message"] = "success";
-                    return Json("success");
+                    return RedirectToAction("Islemler");
                 }
                 catch (Exception)
                 {

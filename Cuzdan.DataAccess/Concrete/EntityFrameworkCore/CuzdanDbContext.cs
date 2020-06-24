@@ -19,6 +19,7 @@ namespace Cuzdan.DataAccess.Concrete.EntityFrameworkCore
         public DbSet<Hisse> Hisse { get; set; }
         public DbSet<Kisi> Kisi { get; set; }
         public DbSet<Islem> Islem { get; set; }
+        public DbSet<Portfoy> Portfoy { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,10 +36,12 @@ namespace Cuzdan.DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<Islem>().Property(f => f.Hedef).HasColumnType("float");
             modelBuilder.Entity<Islem>().Property(f => f.Kar).HasColumnType("float");
             modelBuilder.Entity<Islem>().Property(f => f.AnlikDeger).HasColumnType("float");
+            modelBuilder.Entity<Portfoy>().Property(f => f.Maliyet).HasColumnType("float");
+            modelBuilder.Entity<Portfoy>().Property(f => f.Kar).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<IslemComplexData>().HasNoKey();
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Alis).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Satis).HasColumnType("float");
-            modelBuilder.Entity<IslemComplexData>().Property(f => f.KarZarar).HasColumnType("float");
+            modelBuilder.Entity<IslemComplexData>().Property(f => f.KarZarar).HasColumnType("decimal(18,2)");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Maliyet).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Hedef).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.AnlikDeger).HasColumnType("float");

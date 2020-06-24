@@ -64,8 +64,7 @@ namespace Cuzdan.MvcWebUI.Controllers
             return Json(islem);
         }
 
-        [HttpPost]
-        public IActionResult Add(IslemViewModel islemViewModel)
+        public JsonResult Add(IslemViewModel islemViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -83,19 +82,21 @@ namespace Cuzdan.MvcWebUI.Controllers
                         IslemKodu = islemViewModel.IslemComplexData.IslemKodu,
                         IslemDurum = islemViewModel.IslemComplexData.IslemKodu == 0 ? 0 : 1,
                         Alis = islemViewModel.IslemComplexData.IslemKodu == 0 ? 0 : (float)islemViewModel.IslemComplexData.Alis,
-                        Satis = islemViewModel.IslemComplexData.IslemKodu == 1 ? 0 : (float)islemViewModel.IslemComplexData.Alis
+                        Satis = islemViewModel.IslemComplexData.IslemKodu == 1 ? 0 : (float)islemViewModel.IslemComplexData.Alis                    
                     };
                    
                     _islemService.Add(islem);
-                    TempData["message"] = "success";
-                    return RedirectToAction("Islemler");
+
+                    var optionValues = selectListKisiler();                    
+
+                    return Json(1);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    return RedirectToAction("Islemler");
+                    return Json(ex);
                 }
             }
-            return RedirectToAction("Islemler");
+            return Json(0);
         }
     }
 }

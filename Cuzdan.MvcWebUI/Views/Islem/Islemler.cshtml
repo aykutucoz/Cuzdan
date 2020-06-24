@@ -30,10 +30,8 @@
                                 <th>Hisse</th>
                                 <th>Kurum</th>
                                 <th>Alış</th>
-                                <th>Hedef</th>
                                 <th>Adet</th>
                                 <th>Maliyet (TL)</th>
-                                <th>İşlem Tarihi</th>
                                 <th>İşlem</th>
                             </tr>
                         </thead>
@@ -138,10 +136,8 @@
                             { data: "HisseAdi" },
                             { data: "KurumAdi" },
                             { data: "Alis" },
-                            { data: "Hedef" },
                             { data: "IslemAdet" },
                             { data: "Maliyet" },
-                            { data: "AddedDate" },
                             {
                                 data: "IslemId",
                                 render: function (data, type) {
@@ -174,7 +170,7 @@
                     IslemId : $('#IslemId').val(),
                     UserId : $('#UserId').val(),
                     IslemKodu : islemKodu,
-                    Alis : $('#alisFiyat').val() ,
+                    Alis : $('#alisFiyat').val(),
                     IslemAdet : $('#adet').val()
                 }
             }
@@ -183,11 +179,28 @@
                 url: '/Islem/Add',
                 method: 'POST',
                 data: islemViewModel,
-                success: function (data) {
-                    $('#selectListKisiler').val(data.islemComplexData.UserId);
-                    alert("success");
+                success: function (result) {
+                    var userId = $('#userId').val();
+                    result = JSON.parse(result);
+                    if (result == 1) {
+                        $('#selectListKisiler').val(userId);
+                        Swal.fire(
+                            'Başarılı!',
+                            'İşlem gerçekleştirildi.',
+                            'success'
+                        )
+                        location.reload();
+                    }
+                    else {
+                        Swal.fire(
+                            'Başarısız!',
+                            'İşlem Gerçekleştirilemedi!',
+                            'warning'
+                        )
+                        location.reload();
+                    }
                 }
-            })
+            });
         }
 
     </script>

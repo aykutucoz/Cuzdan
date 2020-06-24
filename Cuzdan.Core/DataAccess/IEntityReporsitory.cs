@@ -17,7 +17,7 @@ namespace Cuzdan.Core.DataAccess
         Task<T> UpdateAsync(T entity);
 
         void Delete(T entity);
-        Task DeleteAsycn(T entity);
+        Task DeleteAsync(T entity);
 
         T Get(Expression<Func<T, bool>>filter = null);
         List<T> GetAll(Expression<Func<T, bool>> filter = null);

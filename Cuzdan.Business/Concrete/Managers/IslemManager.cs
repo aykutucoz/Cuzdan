@@ -69,7 +69,7 @@ namespace Cuzdan.Business.Concrete.Managers
         public Islem Update(Islem islem)
         {
             return _islemDal.Update(islem);
-        }
+        }               
 
         public async Task<Islem> UpdateAsync(Islem islem)
         {

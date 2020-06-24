@@ -45,7 +45,7 @@ namespace Cuzdan.Core.DataAccess.EntityFrameworkCore
             }
         }
 
-        public async Task DeleteAsycn(TEntity entity)
+        public async Task DeleteAsync(TEntity entity)
         {
             using (var context = new TContext())
             {

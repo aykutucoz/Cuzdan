@@ -17,12 +17,12 @@ namespace Cuzdan.Entity.ComplexTypes
         public string HisseAdi { get; set; }
         public int IslemAdet { get; set; }
         public int IslemKodu { get; set; }
-        public float? Alis { get; set; }
-        public float? Satis { get; set; }
-        public float? Maliyet { get; set; }        
-        public float? KarZarar { get; set;  }
-        public float? AnlikDeger { get; set; }
-        public float? Hedef { get; set; }
+        public float Alis { get; set; }
+        public float Satis { get; set; }
+        public float Maliyet { get; set; }        
+        public decimal KarZarar { get; set;  }
+        public float AnlikDeger { get; set; }
+        public float Hedef { get; set; }
         public DateTime AddedDate { get; set; }
         public string AddedBy { get; set; }
 

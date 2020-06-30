@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Cuzdan.Business.Abstract;
 using Cuzdan.MvcWebUI.Identity;
 using Cuzdan.MvcWebUI.Models.Secutiry;
 using Cuzdan.MvcWebUI.Services;
@@ -21,14 +22,16 @@ namespace Cuzdan.MvcWebUI.Controllers
         private SignInManager<AppIdentityUser> _signInManager;
         private IConfiguration _configuration;
         private IMailService _mailService;
+        private IKisiService _kisiService;
         public SecurityController(UserManager<AppIdentityUser> userManager,RoleManager<AppIdentityRole> roleManager,SignInManager<AppIdentityUser> signInManager,
-            IConfiguration configuration,IMailService mailService)
+            IConfiguration configuration,IMailService mailService,IKisiService kisiService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _mailService = mailService;
+            _kisiService = kisiService;
         }
 
         public IActionResult Login()
@@ -92,36 +95,42 @@ namespace Cuzdan.MvcWebUI.Controllers
                     Email = registerViewModel.Email,
                     UserName = registerViewModel.UserName
                 };
-                var result  = await _userManager.CreateAsync(user, registerViewModel.Password);
-                if (result.Succeeded)
+
+                if (_kisiService.GetList().Select(p=>p.Email).Contains(user.Email))
                 {
-                    var confirmationCode = _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var projectUrl = _configuration.GetSection("ProjectSettings").GetSection("ProjectUrl").Value;
-                    var callbackUrl = projectUrl + Url.Action("ConfirmEmail", "Security", new { userId = user.Id, code = confirmationCode.Result });
-
-                    var emailAddressesTo = new List<EmailAddress>();
-                    emailAddressesTo.Add(new EmailAddress
+                    var result = await _userManager.CreateAsync(user, registerViewModel.Password);
+                    if (result.Succeeded)
                     {
-                        Name = registerViewModel.UserName,
-                        Address = registerViewModel.Email
-                    });
-                    var emailAddressFrom = new List<EmailAddress>();
-                    emailAddressFrom.Add(new EmailAddress
-                    {
-                        Name = "Borsa Cüzdan Uygulaması Kayıt Maili",
-                        Address = _configuration.GetSection("emailConfiguration").GetSection("emailFrom").Value
-                    });
+                        var confirmationCode = _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var projectUrl = _configuration.GetSection("ProjectSettings").GetSection("ProjectUrl").Value;
+                        var callbackUrl = projectUrl + Url.Action("ConfirmEmail", "Security", new { userId = user.Id, code = confirmationCode.Result });
 
-                    _mailService.Send(new EmailMessage
-                    {
-                        Content = callbackUrl,
-                        ToAddresses = emailAddressesTo,
-                        Subject = registerViewModel.UserName,
-                        FromAddresses = emailAddressFrom
-                    });
+                        var emailAddressesTo = new List<EmailAddress>();
+                        emailAddressesTo.Add(new EmailAddress
+                        {
+                            Name = registerViewModel.UserName,
+                            Address = registerViewModel.Email
+                        });
+                        var emailAddressFrom = new List<EmailAddress>();
+                        emailAddressFrom.Add(new EmailAddress
+                        {
+                            Name = "Borsa Cüzdan Uygulaması Kayıt Maili",
+                            Address = _configuration.GetSection("emailConfiguration").GetSection("emailFrom").Value
+                        });
 
-                    return RedirectToAction("ConfirmEmailInfo","Security",new { email = user.Email});
+                        _mailService.Send(new EmailMessage
+                        {
+                            Content = callbackUrl,
+                            ToAddresses = emailAddressesTo,
+                            Subject = registerViewModel.UserName,
+                            FromAddresses = emailAddressFrom
+                        });
+
+                        return RedirectToAction("ConfirmEmailInfo", "Security", new { email = user.Email });
+                    }
                 }
+                
+                
                 
                 return View(registerViewModel);
             }

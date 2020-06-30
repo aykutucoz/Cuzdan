@@ -36,19 +36,20 @@ namespace Cuzdan.MvcWebUI.Controllers
                     AddedBy = "1",
                     AddedDate = DateTime.Now,
                     User_Name = kisiViewModel.Kisi.User_Name,
-                    User_Code = kisiViewModel.Kisi.User_Code
+                    User_Code = kisiViewModel.Kisi.User_Code,
+                    Email = kisiViewModel.Kisi.Email
                 };
                 try
                 {
                     _kisiService.Add(userForAdd);
-                    return RedirectToAction("Users");
+                    return RedirectToAction("Kisiler");
                 }
                 catch (Exception)
                 {
                     throw;
                 }
             }
-            return RedirectToAction("Users");
+            return RedirectToAction("Kisiler");
         }       
 
         public JsonResult Edit(int id)
@@ -73,7 +74,7 @@ namespace Cuzdan.MvcWebUI.Controllers
                 var userIsValid = _kisiService.GetById(kisiViewModel.Kisi.Id);
                 if (userIsValid == null)
                 {
-                    return RedirectToAction("Users");
+                    return RedirectToAction("Kisiler");
                 }
 
                 var userForEdit = new Kisi
@@ -82,12 +83,13 @@ namespace Cuzdan.MvcWebUI.Controllers
                     AddedBy = "1",
                     AddedDate = DateTime.Now,
                     User_Name = kisiViewModel.Kisi.User_Name,
-                    User_Code = kisiViewModel.Kisi.User_Code
+                    User_Code = kisiViewModel.Kisi.User_Code,
+                    Email = kisiViewModel.Kisi.Email
                 };
                 try
                 {
                     _kisiService.Update(userForEdit);
-                    return RedirectToAction("Users");
+                    return RedirectToAction("Kisiler");
                 }
                 catch (Exception)
                 {
@@ -95,7 +97,7 @@ namespace Cuzdan.MvcWebUI.Controllers
                     throw;
                 }
             }
-            return RedirectToAction("Users");
+            return RedirectToAction("Kisiler");
         }
     }
 }

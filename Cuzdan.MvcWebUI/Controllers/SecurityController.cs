@@ -129,8 +129,11 @@ namespace Cuzdan.MvcWebUI.Controllers
                         return RedirectToAction("ConfirmEmailInfo", "Security", new { email = user.Email });
                     }
                 }
-                
-                
+
+                else
+                {
+                    return View(registerViewModel);
+                }
                 
                 return View(registerViewModel);
             }

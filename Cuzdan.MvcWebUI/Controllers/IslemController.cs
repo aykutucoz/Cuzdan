@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cuzdan.Business.Abstract;
 using Cuzdan.Entity.Concrete;
+using Cuzdan.MvcWebUI.Identity;
 using Cuzdan.MvcWebUI.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -19,15 +21,20 @@ namespace Cuzdan.MvcWebUI.Controllers
         IPortfoyService _portfoyService;
         IKurumService _kurumService;
         IHisseService _hisseService;
-        
+        SignInManager<AppIdentityUser> _signInManager;
+
+
+
         public IslemController(IIslemService islemService, IKisiService kisiService,
-                               IPortfoyService portfoyService,IKurumService kurumService,IHisseService hisseService)
+                               IPortfoyService portfoyService,IKurumService kurumService,
+                               IHisseService hisseService, SignInManager<AppIdentityUser> signInManager)
         {
             _islemService = islemService;
             _kisiService = kisiService;
             _portfoyService = portfoyService;
             _kurumService = kurumService;
             _hisseService = hisseService;
+            _signInManager = signInManager;
         }
         private List<SelectListItem> selectListKisiler()
         {
@@ -128,6 +135,18 @@ namespace Cuzdan.MvcWebUI.Controllers
 
                     _portfoyService.Update(portfoy);
 
+                    var islem = new Islem
+                    {
+                        KurumId = portfoy.KurumId,
+                        HisseId = portfoy.HisseId,
+                        UserId = portfoy.KisiId,
+                        Maliyet = islemViewModel.IslemComplexData.Maliyet,
+                        IslemKodu = islemViewModel.IslemComplexData.IslemKodu,
+                        Alis = islemViewModel.IslemComplexData.Alis,
+                        IslemAdet = islemViewModel.IslemComplexData.IslemAdet
+                    };
+                    islemLog(islem);
+
                     return Json(1);
                                    
                 }
@@ -138,38 +157,7 @@ namespace Cuzdan.MvcWebUI.Controllers
             }
             return Json(0);
         }
-
-        private void islemLog(Islem islem)
-        {
-            if (ModelState.IsValid)
-            {
-                var _islem = new Islem
-                {
-                    UserId = islem.UserId,
-                    HisseId = islem.HisseId,
-                    KurumId = islem.KurumId,
-                    Maliyet = islem.Maliyet,
-                    IslemDate = DateTime.Now,
-                    IslemAdet = islem.IslemAdet,
-                    IslemKodu = islem.IslemKodu,
-                    AddedBy = "1",
-                    Alis = islem.IslemKodu == 1 ? islem.Alis : 0,
-                    Satis = islem.IslemKodu == 0 ? islem.Alis : 0,
-                    Hedef = islem.Hedef,
-                    AnlikDeger = islem.AnlikDeger,
-                    IslemDurum = islem.IslemKodu == 0 ? 0 : 1
-                };
-                try
-                {
-                    _islemService.Add(islem);
-                }
-                catch (Exception ex)
-                {
-
-                }
-            }            
-        }
-
+        
         [HttpPost]
         public IActionResult Add(IslemViewModel islemViewModel)
         {
@@ -183,22 +171,23 @@ namespace Cuzdan.MvcWebUI.Controllers
                     Adet = islemViewModel.portfoy.Adet,
                     Maliyet = islemViewModel.portfoy.Maliyet,
                     Tutar = islemViewModel.portfoy.Adet * islemViewModel.portfoy.Maliyet,
-                    Kar = 0
+                    Kar = 0,
+                    Durum = 1
                 };
-                //var islem = new Islem
-                //{
-                //    KurumId = portfoy.KurumId,
-                //    HisseId = portfoy.HisseId,
-                //    UserId = portfoy.KisiId,
-                //    Maliyet = portfoy.Tutar,
-                //    IslemKodu = 1,
-                //    Alis = portfoy.Maliyet,
-                //    IslemAdet = portfoy.Adet
-                //};
+                var islem = new Islem
+                {
+                    KurumId = portfoy.KurumId,
+                    HisseId = portfoy.HisseId,
+                    UserId = portfoy.KisiId,
+                    Maliyet = portfoy.Tutar,
+                    IslemKodu = 1,
+                    Alis = portfoy.Maliyet,
+                    IslemAdet = portfoy.Adet
+                };
                 try
                 {
                     _portfoyService.Add(portfoy);
-                    //islemLog(islem);
+                    islemLog(islem);
                     return RedirectToAction("Islemler");
                 }
                 catch (Exception ex)
@@ -207,6 +196,36 @@ namespace Cuzdan.MvcWebUI.Controllers
                 }
             }
             return RedirectToAction("Islemler");
+        }
+        private void islemLog(Islem islem)
+        {
+            if (ModelState.IsValid)
+            {
+                var _islem = new Islem
+                {
+                    UserId = islem.UserId,
+                    HisseId = islem.HisseId,
+                    KurumId = islem.KurumId,
+                    Maliyet = islem.Maliyet,
+                    IslemDate = DateTime.Now,
+                    IslemAdet = islem.IslemAdet,
+                    IslemKodu = islem.IslemKodu,
+                    AddedBy = User.Identity.Name,
+                    Alis = islem.IslemKodu == 1 ? islem.Alis : 0,
+                    Satis = islem.IslemKodu == 0 ? islem.Alis : 0,
+                    Hedef = islem.Hedef,
+                    AnlikDeger = islem.AnlikDeger,
+                    IslemDurum = islem.IslemKodu == 0 ? 0 : 1
+                };
+                try
+                {
+                    _islemService.Add(_islem);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("Hata", ex.ToString());
+                }
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Cuzdan.MvcWebUI.Controllers
             {
                 var hisseEkle = new Hisse
                 {
-                    AddedBy = "1",
+                    AddedBy = User.Identity.Name,
                     AddedDate = DateTime.Now,
                     Hisse_Adi = hisseViewModel.Hisse.Hisse_Adi,
                     Hisse_Kodu = hisseViewModel.Hisse.Hisse_Kodu
@@ -82,7 +82,7 @@ namespace Cuzdan.MvcWebUI.Controllers
                     var hisseForEdit = new Hisse
                     {
                         Id = hisseIsValid.Id,
-                        AddedBy = "1",
+                        AddedBy = User.Identity.Name,
                         AddedDate = DateTime.Now,
                         Hisse_Adi = hisseViewModel.Hisse.Hisse_Adi,
                         Hisse_Kodu = hisseViewModel.Hisse.Hisse_Kodu

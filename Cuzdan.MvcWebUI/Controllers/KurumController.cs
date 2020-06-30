@@ -34,7 +34,7 @@ namespace Cuzdan.MvcWebUI.Controllers
             {
                 var kurumEkle = new Kurum
                 {
-                    AddedBy = "1",
+                    AddedBy = User.Identity.Name,
                     Kurum_Adi = kurumViewModel.Kurum.Kurum_Adi,
                     Kurum_Kodu= kurumViewModel.Kurum.Kurum_Kodu,
                     AddedDate = DateTime.Now
@@ -80,7 +80,7 @@ namespace Cuzdan.MvcWebUI.Controllers
                 {
                     var kurumForEdit = new Kurum
                     {
-                        AddedBy = "1",
+                        AddedBy = User.Identity.Name,
                         AddedDate = DateTime.Now,
                         Id = kurumIsValid.Id,
                         Kurum_Adi = kurumViewModel.Kurum.Kurum_Adi,

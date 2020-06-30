@@ -33,7 +33,7 @@ namespace Cuzdan.MvcWebUI.Controllers
             {
                 var userForAdd = new Kisi
                 {
-                    AddedBy = "1",
+                    AddedBy = User.Identity.Name,
                     AddedDate = DateTime.Now,
                     User_Name = kisiViewModel.Kisi.User_Name,
                     User_Code = kisiViewModel.Kisi.User_Code,
@@ -80,7 +80,7 @@ namespace Cuzdan.MvcWebUI.Controllers
                 var userForEdit = new Kisi
                 {
                     Id = userIsValid.Id,
-                    AddedBy = "1",
+                    AddedBy = User.Identity.Name,
                     AddedDate = DateTime.Now,
                     User_Name = kisiViewModel.Kisi.User_Name,
                     User_Code = kisiViewModel.Kisi.User_Code,

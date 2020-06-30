@@ -87,6 +87,9 @@ namespace Cuzdan.MvcWebUI
 
             services.AddScoped<IKisiService, KisiManager>();
             services.AddScoped<IKisiDal, EfKisiDal>();
+            
+            services.AddScoped<IPortfoyService, PortfoyManager>();
+            services.AddScoped<IPortfoyDal, EfPortfoyDal>();
 
             services.AddScoped<IEmailConfiguration,EmailConfiguration>();
             services.AddScoped<IMailService, MailManager>();

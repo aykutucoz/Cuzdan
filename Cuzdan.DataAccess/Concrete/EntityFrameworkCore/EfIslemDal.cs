@@ -29,7 +29,7 @@ namespace Cuzdan.DataAccess.Concrete.EntityFrameworkCore
                                  KisiId = kisi.Id,
                                  KurumId = k.Id,
                                  HisseId = h.Id,
-                                 Maliyet = i.IslemAdet * i.Alis,
+                                 Maliyet = i.Maliyet,
                                  AddedBy = i.AddedBy,
                                  AddedDate = i.IslemDate,
                                  Alis = i.Alis,

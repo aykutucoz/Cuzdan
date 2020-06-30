@@ -12,5 +12,6 @@ namespace Cuzdan.Entity.Concrete
         public string User_Code { get; set; }
         public string AddedBy { get; set; }
         public DateTime AddedDate { get; set; }
+        public string Email { get; set; }
     }
 }

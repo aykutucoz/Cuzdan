@@ -21,6 +21,7 @@ namespace Cuzdan.DataAccess.Concrete.EntityFrameworkCore.Mappings
             builder.Property(p => p.Maliyet).HasColumnName("Maliyet");
             builder.Property(p => p.Kar).HasColumnName("Kar");
             builder.Property(p => p.Tutar).HasColumnName("Tutar");
+            builder.Property(p => p.Durum).HasColumnName("Durum");
         }
     }
 }

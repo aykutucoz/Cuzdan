@@ -14,7 +14,6 @@ namespace Cuzdan.Business.Abstract
         Task<Hisse> UpdateAsync(Hisse hisse);
         void Delete(Hisse hisse);
         Hisse GetById(int id);
-        List<Hisse> GetList();      
-
+        List<Hisse> GetList();
     }
 }

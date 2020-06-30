@@ -13,7 +13,8 @@ namespace Cuzdan.Entity.Concrete
         public int HisseId { get; set; }
         public float Maliyet { get; set; }
         public int Adet { get; set; }
-        public decimal Kar { get; set; }
-        public int Tutar { get; set; }
+        public float Kar { get; set; }
+        public float Tutar { get; set; }
+        public int Durum { get; set; }
     }
 }

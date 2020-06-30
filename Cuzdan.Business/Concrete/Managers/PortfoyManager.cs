@@ -1,5 +1,6 @@
 ﻿using Cuzdan.Business.Abstract;
 using Cuzdan.DataAccess.Abstract;
+using Cuzdan.Entity.ComplexTypes;
 using Cuzdan.Entity.Concrete;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,16 @@ namespace Cuzdan.Business.Concrete.Managers
         public Portfoy GetById(int id)
         {
             return _portfoyDal.Get(p => p.Id == id);
+        }
+
+        public IslemComplexData GetIslemComplexDataById(int id)
+        {
+            return _portfoyDal.GetIslemComplexDataById(id);
+        }
+
+        public List<IslemComplexData> GetIslemComplexDatas(int id)
+        {
+            return _portfoyDal.GetIslemComplexDatas(id);
         }
 
         public List<Portfoy> GetList()

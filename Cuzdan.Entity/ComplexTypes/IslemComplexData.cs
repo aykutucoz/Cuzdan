@@ -20,7 +20,7 @@ namespace Cuzdan.Entity.ComplexTypes
         public float Alis { get; set; }
         public float Satis { get; set; }
         public float Maliyet { get; set; }        
-        public decimal KarZarar { get; set;  }
+        public float KarZarar { get; set;  }
         public float AnlikDeger { get; set; }
         public float Hedef { get; set; }
         public DateTime AddedDate { get; set; }

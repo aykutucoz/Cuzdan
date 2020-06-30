@@ -1,4 +1,5 @@
-﻿using Cuzdan.Entity.Concrete;
+﻿using Cuzdan.Entity.ComplexTypes;
+using Cuzdan.Entity.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,5 +17,7 @@ namespace Cuzdan.Business.Abstract
         List<Portfoy> GetList();
         List<Portfoy> GetList(int id);
         Portfoy GetById(int id);
+        IslemComplexData GetIslemComplexDataById(int id);
+        List<IslemComplexData> GetIslemComplexDatas(int id);
     }
 }

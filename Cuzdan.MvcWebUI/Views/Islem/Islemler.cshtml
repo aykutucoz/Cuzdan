@@ -11,12 +11,12 @@
                 <h4>Kayıtlı İşlemler</h4>
             </div>
             <div class="card-tools">
+                <button data-toggle="modal" data-target="#islemEkleModal"><i class="fas fa-plus"></i></button>
             </div>
         </div>
         <div class="card-body">
             <div class="form-group">
                 <label>Kişi Seç</label>
-                <input id="selected" hidden />
                 <select class="form-control col-md-4" id="selectListKisiler" asp-for="@Model.kisi.Id" asp-items="@Model.selectListKisiler">
                     <option disabled selected value="-1">Seçiniz</option>
                 </select>
@@ -29,9 +29,10 @@
                                 <th>Id</th>
                                 <th>Hisse</th>
                                 <th>Kurum</th>
-                                <th>Alış</th>
+                                <th>Maliyet</th>
                                 <th>Adet</th>
-                                <th>Maliyet (TL)</th>
+                                <th>Tutar (TL)</th>
+                                <th>Kar/Zarar</th>
                                 <th>İşlem</th>
                             </tr>
                         </thead>
@@ -44,10 +45,73 @@
     </div>
 </div>
 
+<div class="modal fade" id="islemEkleModal" tabindex="-2" role="dialog" aria-labelledby="islemEkleLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="islemEkleForm" enctype="multipart/form-data" asp-controller="Islem" asp-action="Add" method="post">
+                <div class="modal-header">
+                    <h5>Hisse Alış</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-header"></div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Kisi:</label>
+                                        <select class="form-control col-md-12" id="selectListKullancilar" asp-for="@Model.portfoy.KisiId" asp-items="@Model.selectListKisiler">
+                                            <option disabled selected value="-1">Seçiniz</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kurum:</label>
+                                        <select class="form-control col-md-12" id="selectListKurumlar" asp-for="@Model.portfoy.KurumId" asp-items="@Model.selectListKurumlar">
+                                            <option disabled selected value="-1">Seçiniz</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Hisse:</label>
+                                        <select class="form-control col-md-12" id="selectListHisseler" asp-for="@Model.portfoy.HisseId" asp-items="@Model.selectListHisseler">
+                                            <option disabled selected value="-1">Seçiniz</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Maliyet :</label>
+                                        <input type="text" class="form-control" id="maliyetAdd" asp-for="@Model.portfoy.Maliyet"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Adet :</label>
+                                        <input type="text" class="form-control" id="adetAdd" asp-for="@Model.portfoy.Adet" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tutar :</label>
+                                        <input type="text" class="form-control" id="maliyetAdd" disabled />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="islemYapModal" tabindex="-1" role="dialog" aria-labelledby="islemYapLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form id="islemForm" enctype="multipart/form-data" asp-controller="Islem" asp-action="Add" method="post">
+            <form id="islemForm" enctype="multipart/form-data" method="post">
                 <input asp-for="IslemComplexData.KisiId" id="userId" hidden />
                 <input asp-for="IslemComplexData.IslemId" id="IslemId" hidden />
                 <div class="modal-header">
@@ -118,6 +182,10 @@
 @section getIslemlerScript{
     <script type="text/javascript">
 
+        $("#alisAdet").on('keyup', function (e) {
+            $("#tutar").val($(this).val() * $("#alis").val());
+        });
+
         $("#selectListKisiler").on("change", function () {
             var KisiId = $(this).val();
 
@@ -138,6 +206,7 @@
                             { data: "Alis" },
                             { data: "IslemAdet" },
                             { data: "Maliyet" },
+                            { data: "KarZarar"},
                             {
                                 data: "IslemId",
                                 render: function (data, type) {
@@ -161,22 +230,58 @@
                 })
         }
 
-        function islemKaydet() {
-            var islemKodu;
-            if ($('input[name=islemKodu]:checked', '#islemForm').val() == 1) islemKodu = 1; else islemKodu = 0;
-                            
+        function hisseAl() {
             var islemViewModel = {
-                islemComplexData: {
-                    IslemId : $('#IslemId').val(),
-                    UserId : $('#UserId').val(),
-                    IslemKodu : islemKodu,
-                    Alis : $('#alisFiyat').val(),
-                    IslemAdet : $('#adet').val()
+                portfoy: {
+                    KisiId: $('#selectListKullancilar').val(),
+                    KurumId: $('#selectListKurumlar').val(),
+                    HisseId: $('#selectListHisseler').val(),
+                    Maliyet: $('#maliyetAdd').val(),
+                    Adet: $('#adetAdd').val()
                 }
             }
 
             $.ajax({
-                url: '/Islem/Add',
+                url: "/Islem/Add",
+                type: "POST",
+                data: islemViewModel,
+                success: function (response) {
+                    result = JSON.parse(response);
+                    if (result == 1) {
+                        Swal.fire(
+                            'Başarılı!',
+                            'İşlem gerçekleştirildi.',
+                            'success'
+                        )
+                    }
+                    else {
+                        Swal.fire(
+                            'Başarısız!',
+                            'İşlem Gerçekleştirilemedi!',
+                            'warning'
+                        )
+                    }
+                }
+
+            });
+        }
+
+        function islemKaydet() {
+            var islemKodu;
+            if ($('input[name=islemKodu]:checked', '#islemForm').val() == 1) islemKodu = 1; else islemKodu = 0;
+
+            var islemViewModel = {
+                islemComplexData: {
+                    IslemId: $('#IslemId').val(),
+                    UserId: $('#UserId').val(),
+                    IslemKodu: islemKodu,
+                    Alis: $('#alisFiyat').val(),
+                    IslemAdet: $('#adet').val()
+                }
+            }
+
+            $.ajax({
+                url: '/Islem/Edit',
                 method: 'POST',
                 data: islemViewModel,
                 success: function (result) {

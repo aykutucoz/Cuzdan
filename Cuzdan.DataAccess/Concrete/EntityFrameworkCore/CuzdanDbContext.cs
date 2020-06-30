@@ -24,12 +24,13 @@ namespace Cuzdan.DataAccess.Concrete.EntityFrameworkCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration<Kurum>(new KurumMap());
-            /*modelBuilder.Entity<Kurum>()
-                        .Property(f => f.AddedDate)
+            /*modelBuilder.Entity<Islem>()
+                        .Property(f => f.IslemDate)
                         .HasColumnType("datetime2");*/
             modelBuilder.ApplyConfiguration<Hisse>(new HisseMap());
             modelBuilder.ApplyConfiguration<Kisi>(new KisiMap());
             modelBuilder.ApplyConfiguration<Islem>(new IslemMap());
+            modelBuilder.ApplyConfiguration<Portfoy>(new PortfoyMap());
             modelBuilder.Entity<Islem>().Property(f => f.Maliyet).HasColumnType("float");
             modelBuilder.Entity<Islem>().Property(f => f.Alis).HasColumnType("float");
             modelBuilder.Entity<Islem>().Property(f => f.Satis).HasColumnType("float");
@@ -37,11 +38,12 @@ namespace Cuzdan.DataAccess.Concrete.EntityFrameworkCore
             modelBuilder.Entity<Islem>().Property(f => f.Kar).HasColumnType("float");
             modelBuilder.Entity<Islem>().Property(f => f.AnlikDeger).HasColumnType("float");
             modelBuilder.Entity<Portfoy>().Property(f => f.Maliyet).HasColumnType("float");
-            modelBuilder.Entity<Portfoy>().Property(f => f.Kar).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<Portfoy>().Property(f => f.Tutar).HasColumnType("float");
+            modelBuilder.Entity<Portfoy>().Property(f => f.Kar).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().HasNoKey();
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Alis).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Satis).HasColumnType("float");
-            modelBuilder.Entity<IslemComplexData>().Property(f => f.KarZarar).HasColumnType("decimal(18,2)");
+            modelBuilder.Entity<IslemComplexData>().Property(f => f.KarZarar).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Maliyet).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.Hedef).HasColumnType("float");
             modelBuilder.Entity<IslemComplexData>().Property(f => f.AnlikDeger).HasColumnType("float");

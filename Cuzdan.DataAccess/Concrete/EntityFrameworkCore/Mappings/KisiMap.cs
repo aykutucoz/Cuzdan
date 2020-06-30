@@ -18,6 +18,7 @@ namespace Cuzdan.DataAccess.Concrete.EntityFrameworkCore.Mappings
             builder.Property(p => p.AddedDate).HasColumnName("AddedDate");
             builder.Property(p => p.User_Code).HasColumnName("User_Code");
             builder.Property(p => p.User_Name).HasColumnName("User_Name");
+            builder.Property(p => p.Email).HasColumnName("Email");
         }
     }
 }

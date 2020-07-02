@@ -199,6 +199,7 @@
                     response = JSON.parse(response);
                     $("#islemler").dataTable({
                         data: response,
+                        "bDestroy": true,
                         "columns": [
                             { data: "IslemId" },
                             { data: "HisseAdi" },
